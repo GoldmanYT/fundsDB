@@ -144,7 +144,7 @@ class FormDialog(QDialog, UiInsertDialog):
                     .text()
                 ])
         except sqlite3.Error as err:
-            print(err)
+            pass
         self.main_window.load_tables()
 
 
