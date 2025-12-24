@@ -42,16 +42,14 @@ def dialog_update(tab_name):
 @st.dialog('Удаление записи')
 def dialog_delete(tab_name):
     data = tab_data[tab_name]
-    values = [st.text_input(label, key=label) for label in data['labels'] if label != 'Код']
-    fields = [field for field in data['fields'] if field != 'Код']
+    values = [st.text_input(label, key=label) for label in data['labels'] if label == 'Код']
     if st.button('OK'):
         with sqlite3.connect(db_name) as con:
             con.row_factory = sqlite3.Row
             cur = con.cursor()
-            cur.execute(INSERT_INTO.format(
+            cur.execute(DELETE_FROM.format(
                 table=data['table'],
-                fields=','.join(fields),
-                values=','.join('?' * len(values)),
+                id='?',
             ), values)
         st.rerun()
 
