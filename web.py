@@ -22,6 +22,40 @@ def dialog_insert(tab_name):
         st.rerun()
 
 
+@st.dialog('Изменение записи')
+def dialog_update(tab_name):
+    data = tab_data[tab_name]
+    values = [st.text_input(label, key=label) for label in data['labels'] if label != 'Код']
+    fields = [field for field in data['fields'] if field != 'Код']
+    if st.button('OK'):
+        with sqlite3.connect(db_name) as con:
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            cur.execute(INSERT_INTO.format(
+                table=data['table'],
+                fields=','.join(fields),
+                values=','.join('?' * len(values)),
+            ), values)
+        st.rerun()
+
+
+@st.dialog('Удаление записи')
+def dialog_delete(tab_name):
+    data = tab_data[tab_name]
+    values = [st.text_input(label, key=label) for label in data['labels'] if label != 'Код']
+    fields = [field for field in data['fields'] if field != 'Код']
+    if st.button('OK'):
+        with sqlite3.connect(db_name) as con:
+            con.row_factory = sqlite3.Row
+            cur = con.cursor()
+            cur.execute(INSERT_INTO.format(
+                table=data['table'],
+                fields=','.join(fields),
+                values=','.join('?' * len(values)),
+            ), values)
+        st.rerun()
+
+
 st.title('Фонды денежного рынка')
 
 with sqlite3.connect(db_name) as con:
@@ -62,8 +96,8 @@ for tab, tab_name in zip(tabs, tabs_data):
                 dialog_insert(tab_name)
         with update:
             if st.button('Изменить', f'{tab_name}_update'):
-                dialog_insert(tab_name)
+                dialog_update(tab_name)
         with delete:
             if st.button('Удалить', f'{tab_name}_delete'):
-                dialog_insert(tab_name)
+                dialog_delete(tab_name)
         st.table(tabs_data[tab_name])
